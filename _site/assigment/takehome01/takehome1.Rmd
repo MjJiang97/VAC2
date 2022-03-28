@@ -1,0 +1,143 @@
+---
+title: "Building Elegant Graphics with ggplot"
+description: |
+  In class exercise 01 Session 1 Date:01/15
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output:
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+options(htmitools.dir.verison = FALSE)
+knitr::opts_chunk$set(
+  fig.retina=3,
+  echo = FALSE,
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+  )
+```
+
+
+#
+```{r}
+packages = c('tidyverse','readxl','knitr')
+for(p in packages){
+  if(!require(p, character.only = T)){
+    install.packages(p)
+  }
+    
+  library(p, character.only = T)
+}
+
+```
+
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE}
+##Importing Data
+orders<- read_xls("data/Superstore-2021.xls",
+                  sheet = "Orders")
+returns <- read_xls("data/Superstore-2021.xls",
+                  sheet = "Returns")
+
+
+```
+```{r}
+##Finding Return Orders
+joined_tab <- left_join(returns, orders,
+                        by = c("Order ID" = "Order ID")
+                        )
+```
+
+
+
+
+```{r} 
+##COUNTING RETURNS BY CATEGORY
+freq_returned <- joined_tab %>%
+  group_by(`Sub-Category`) %>%
+  summarise('Returns' = n()) %>%
+  ungroup()
+```
+```{r}
+##Sorting RETURNS
+freq_sorted <- freq_returned %>%
+  arrange(desc(Returns))
+```
+```{r}
+freq_cum <- freq_sorted %>%
+  mutate(cumfreq = cumsum(Returns))
+```
+
+
+
+
+## My first data visualization with ggplot2
+
+
+
+
+
+
+
+
+```{r}
+ggplot(data= freq_cum,
+       aes(x = reorder(freq_cum$`Sub-Category`,-Returns),y=freq_cum$Returns))+
+  geom_bar(stat = "identity",fill="darkblue")+
+  geom_line( aes(y=(freq_cum$cumfreq*552/3226),group=1), size=2, color="orange")+
+  geom_line( aes(y=0.8*552), color="black",group=1,size=0.1,linetype="dotted")+
+  theme(axis.text.x = element_text(angle=90, vjust=0.6))+
+  labs(title = "Number of Return orders based on differenrt category",x='Category')+
+  scale_y_continuous(name = "Returns",sec.axis = sec_axis( trans=~.*1/552 ,name="Percentage",labels = scales::percent_format(accuracy = 1)))
+  
+
+```
+
+```{r}
+ggplot(data= freq_cum,
+       aes(x = reorder(freq_cum$`Sub-Category`,-Returns),y=freq_cum$Returns))+
+  geom_bar(stat = "identity",fill="lightblue")+
+  geom_line( aes(y=(freq_cum$cumfreq*552/3226),group=1), size=2, color="orange")+
+  geom_line( aes(y=0.8*552), color="black",group=1,size=0.1,linetype="dotted")+
+  scale_x_discrete(guide = guide_axis(n.dodge = 2))+
+  labs(title = "Number of Return orders based on differenrt category",x='Category')+
+  scale_y_continuous(name = "Returns",sec.axis = sec_axis( trans=~.*1/552 ,name="Percentage",labels = scales::percent_format(accuracy = 1)))
+  
+
+```
+```{r}
+ta<- read_csv("data/RESP.csv")
+```
+```{r}
+##set a proper name for each column
+agetotal <- setNames(aggregate(ta$Pop,by=list(AG=ta$AG,Sex=ta$Sex),FUN=sum), c("AGE","Sex","Population"))
+```
+```{r}
+###sorting AGE in correct order
+agetotal$AGE<-ordered(agetotal$AGE,levels=c("0_to_4","5_to_9","10_to_14","15_to_19","20_to_24","25_to_29","30_to_34","35_to_39","40_to_44","45_to_49","50_to_54","55_to_59","60_to_64","65_to_69","70_to_74","75_to_79","80_to_84","85_to_89","90_and_over"))
+
+```
+
+
+```{r}
+ggplot(agetotal, aes(x = AGE, y = Population, fill = Sex)) + 
+  geom_bar(data=subset(agetotal,Sex=="Females"),stat = "identity",aes(y=Population/10000)) + 
+  geom_bar(data=subset(agetotal,Sex=="Males"),stat="identity",aes(y=Population*(-1)/10000)) + 
+  scale_y_continuous(name='Population(unit in 10,000)',breaks=seq(-15,15,1),labels=abs(seq(-15,15,1))) +
+  coord_flip()+
+  labs(title = "Population in different age group ")
+
+```
+
+
+
+
+
