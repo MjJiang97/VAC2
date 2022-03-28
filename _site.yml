@@ -1,5 +1,5 @@
-name: "VAC2"
-title: "My Website"
+name: "VAC"
+title: "Visual Analytics"
 description: |
   My Website
 output_dir: "_site"
@@ -9,4 +9,19 @@ navbar:
       href: index.html
     - text: "About"
       href: about.html
+  left:
+    - text: "Take-home Exercise"
+      menu:
+      - text: "Take-home Exercise 1"
+        href: "assigment/takehome01/takehome1.html"
+      - text: "Take-home Exercise 2"
+        href: "assigment/takehome02/takehome2.html"
+      - text: "Take-home Exercise 3"
+        href: "assigment/takehome03/takehome3.html"
+    - text: "DataViz Makeover"
+      menu:
+      - text: "DataViz 1"
+        href: "assigment/dataviz1/Dataviz1.html"
+      - text: "DataViz 2"
+        href: "assigment/dataviz2/Dataviz2.html"
 output: distill::distill_article
