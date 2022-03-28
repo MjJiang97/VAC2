@@ -1,7 +1,7 @@
 ---
-title: "My Website"
+title: "Visual Analytics--ISSS608"
 description: |
-  Welcome to the website. I hope you enjoy it!
+  This website consists of a collection of works done for courses ISSS608 Visual Analytics in MITB program.
 site: distill::distill_website
 ---
 
