@@ -1,7 +1,7 @@
 ---
 title: "About this site"
 description: |
-  Some additional details about the website
+  MITB ISSS608 Visual Analytics Page for Jiang Mingjun
 ---
 
 ```{r setup, include=FALSE}
